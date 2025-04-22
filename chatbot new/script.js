@@ -219,3 +219,85 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// Add this code to your existing script.js file
+document.addEventListener('DOMContentLoaded', function() {
+    // Get reference to the header AI Assistant buttons
+    const headerAIButton = document.querySelector('.bg-red-600.hidden.md\\:block');
+    const mobileAIButton = document.querySelector('.bg-red-600.hover\\:bg-red-700.text-white.px-4.py-2.rounded-full.font-medium.transition.duration-300.mt-2');
+    
+    // Get reference to cuisine links in the footer
+    const cuisineLinks = document.querySelectorAll('footer a.text-gray-400.hover\\:text-white.transition');
+    
+    // Function to open chatbot and set a prompt
+    function openChatbotWithPrompt(prompt) {
+        // Open the chatbot
+        document.body.classList.add('show-chatbot');
+        
+        // Set the text in the message input
+        const messageInput = document.querySelector('.message-input');
+        if (messageInput) {
+            messageInput.value = prompt;
+            messageInput.dispatchEvent(new Event('input')); // Trigger input event to resize textarea
+            
+            // Optionally auto-send the message
+            // setTimeout(() => {
+            //     document.querySelector('#send-message').click();
+            // }, 500);
+        }
+    }
+    
+    // Add event listeners to header AI buttons
+    if (headerAIButton) {
+        headerAIButton.addEventListener('click', function() {
+            document.body.classList.add('show-chatbot');
+        });
+    }
+    
+    if (mobileAIButton) {
+        mobileAIButton.addEventListener('click', function() {
+            document.body.classList.add('show-chatbot');
+        });
+    }
+    
+    // Add click event listeners to cuisine links in footer
+    cuisineLinks.forEach(link => {
+        const cuisineType = link.textContent.trim();
+        
+        // Only attach to the cuisine types we're interested in
+        if (['Italian', 'Mexican', 'Japanese', 'Indian'].includes(cuisineType)) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault(); // Prevent default link behavior
+                
+                // Create appropriate prompts based on cuisine type
+                let prompt = '';
+                switch (cuisineType) {
+                    case 'Italian':
+                        prompt = "Tell me about authentic Italian cuisine and recommend some traditional dishes I should try.";
+                        break;
+                    case 'Mexican':
+                        prompt = "What are the best traditional Mexican dishes and where can I typically find them?";
+                        break;
+                    case 'Japanese':
+                        prompt = "I'm interested in exploring Japanese cuisine. What authentic dishes should I try?";
+                        break;
+                    case 'Indian':
+                        prompt = "Could you recommend some regional Indian dishes that represent authentic Indian cuisine?";
+                        break;
+                    default:
+                        prompt = `Tell me about ${cuisineType} cuisine and popular dishes.`;
+                }
+                
+                openChatbotWithPrompt(prompt);
+            });
+        }
+    });
+    
+    // Also attach to the "Explore Cuisines" button in hero section
+    const exploreCuisinesButton = document.querySelector('.bg-red-500.hover\\:bg-red-600.text-white.font-bold.py-3.px-6.rounded-full');
+    if (exploreCuisinesButton) {
+        exploreCuisinesButton.addEventListener('click', function() {
+            openChatbotWithPrompt("What are some popular local cuisines around the world that I should know about?");
+        });
+    }
+});
